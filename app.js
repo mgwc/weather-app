@@ -1,7 +1,6 @@
 const express = require("express");
 const https = require("https");
 const bodyParser = require("body-parser");
-
 const app = express();
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -15,7 +14,7 @@ app.get("/", function(req, res) {
 
     const location = postReq.body.location;
     const units = "imperial";
-    const apiKey = "bd2721ae439b1928361495515847f8ce";
+    const apiKey = "";
     const apiCall = "https://api.openweathermap.org/data/2.5/weather?q=" + location + "&units=" + units + "&appid=" + apiKey;
 
     https.get(apiCall, function(response) {
