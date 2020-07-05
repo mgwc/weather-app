@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require("express");
 const https = require("https");
 const bodyParser = require("body-parser");
+const {Client, Status} = require("@googlemaps/google-maps-services-js");
 const app = express();
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -10,12 +11,24 @@ app.get("/", function(req, res) {
 
   res.sendFile(__dirname + "/index.html")
 
+  var autocomplete;
+  function initAutocomplete() {
+    autocomplete = new google.maps.places.Autocomplete(
+      $('#autocomplete'),
+      {
+        types: ['(cities)'],
+        // fields:
+      });
+
+      autocomplete.addListener('')
+  }
+
+  // Post request made when user selects location for which to get weather data
   app.post("/", function(postReq, postRes) {
     console.log("Post request received");
 
     const location = postReq.body.location;
     const units = "imperial";
-    const apiKey = "";
     const apiCall = "https://api.openweathermap.org/data/2.5/weather?q=" +
       location + "&units=" + units + "&appid=" +
       process.env.OPENWEATHERMAP_API_KEY;
