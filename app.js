@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const https = require("https");
 const bodyParser = require("body-parser");
@@ -15,7 +16,9 @@ app.get("/", function(req, res) {
     const location = postReq.body.location;
     const units = "imperial";
     const apiKey = "";
-    const apiCall = "https://api.openweathermap.org/data/2.5/weather?q=" + location + "&units=" + units + "&appid=" + apiKey;
+    const apiCall = "https://api.openweathermap.org/data/2.5/weather?q=" +
+      location + "&units=" + units + "&appid=" +
+      process.env.OPENWEATHERMAP_API_KEY;
 
     https.get(apiCall, function(response) {
       console.log(response.statusCode);
