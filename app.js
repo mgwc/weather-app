@@ -11,17 +11,25 @@ app.get("/", function(req, res) {
 
   res.sendFile(__dirname + "/index.html")
 
-  var autocomplete;
-  function initAutocomplete() {
-    autocomplete = new google.maps.places.Autocomplete(
-      $('#autocomplete'),
-      {
-        types: ['(cities)'],
-        // fields:
-      });
+  // On text entry in HTML input, query Google Places Autocomplete API
+  var location;
+  // TODO: Get location from HTML input element as it is typed
+  const client = new Client({});
+  client.placeAutocomplete ({   // See https://googlemaps.github.io/google-maps-services-js/globals.html
+      params: {
+        input: location,
+        key: process.env.GOOGLE_PLACES_API_KEY,
+        types: ["(cities)"],
+      },
+      timeout: 1000, // milliseconds
+    })
+    .then((r) => {
+      console.log(r.predictions[0].location);
+    })
+    .catch((e) => {
+      console.log(e.response.data.error_message);
+    });
 
-      autocomplete.addListener('')
-  }
 
   // Post request made when user selects location for which to get weather data
   app.post("/", function(postReq, postRes) {
