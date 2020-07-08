@@ -30,6 +30,8 @@ app.get("/", function(req, res) {
       console.log(e.response.data.error_message);
     });
 
+  // TODO: Get location once user selects an autocomplete option
+
 
   // Post request made when user selects location for which to get weather data
   app.post("/", function(postReq, postRes) {
@@ -49,6 +51,7 @@ app.get("/", function(req, res) {
         const weatherDescription = weatherData.weather[0].description;
         console.log(temp);
         console.log(weatherDescription);
+        // TODO: Update response to send user to new page or update page content
         postRes.write("<html><body><h1>The temperature in " + location + " is " + temp +
           " degrees Fahrenheit.</h1>");
         postRes.write("<p>Right now, the weather is " + weatherDescription + ".</p>");
