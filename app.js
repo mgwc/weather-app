@@ -16,6 +16,7 @@ const express = require("express");
 const https = require("https");
 const bodyParser = require("body-parser");
 // const { Client, Status } = require("@googlemaps/google-maps-services-js");
+const path = require("path");
 const app = express();
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -87,6 +88,10 @@ app.post("/", function (postReq, postRes) {
     let status = response.statusCode;
     console.log("Response code = " + status);
 
+    const options = {
+      root: path.join(__dirname, 'public'),
+    }
+
     // Handle successful API call
     if (status == 200) {
       response.on("data", function (data) {
@@ -96,7 +101,9 @@ app.post("/", function (postReq, postRes) {
         console.log(temp);
         console.log(weatherDescription);
 
-        // TODO: Update response to send user to new page or update page content
+        // TODO: Update HTML with data returned by API 
+        //postRes.sendFile("results.html", options);
+
         // postRes.write(
         //   "<html><body><h1>The temperature in " +
         //     location +
@@ -116,8 +123,7 @@ app.post("/", function (postReq, postRes) {
         // postRes.send();
       });
     } else {  // Handle unsuccessful API call
-        // Add error text to page
-        $('.error-text').text("Place not found; please enter location as a zip code or city in \"City, State\" format");
+        postRes.sendFile("error.html", options);
     }
   });
 });
