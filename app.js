@@ -20,9 +20,10 @@ const path = require("path");
 const app = express();
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.set("view engine", "ejs");
 
 app.get("/", function (req, res) {
-  res.sendFile(__dirname + "/index.html");
+  res.render("main");
 
   // On text entry in HTML input, query Google Places Autocomplete API
   // let location;
@@ -96,34 +97,18 @@ app.post("/", function (postReq, postRes) {
     if (status == 200) {
       response.on("data", function (data) {
         const weatherData = JSON.parse(data);
-        const temp = weatherData.main.temp;
+        const temp = Math.round(weatherData.main.temp);
         const weatherDescription = weatherData.weather[0].description;
+        const iconLink = "http://openweathermap.org/img/wn/" + weatherData.weather[0].icon + "@2x.png";
         console.log(temp);
         console.log(weatherDescription);
 
-        // TODO: Update HTML with data returned by API 
-        //postRes.sendFile("results.html", options);
-
-        // postRes.write(
-        //   "<html><body><h1>The temperature in " +
-        //     location +
-        //     " is " +
-        //     temp +
-        //     " degrees Fahrenheit.</h1>"
-        // );
-        // postRes.write(
-        //   "<p>Right now, the weather is " + weatherDescription + ".</p>"
-        // );
-        // postRes.write(
-        //   '<p><img src="http://openweathermap.org/img/wn/' +
-        //     weatherData.weather[0].icon +
-        //     '@2x.png"</p></body></html>'
-        // );
-        //
-        // postRes.send();
+        postRes.render("results", {locationName: location,
+          weatherType: weatherDescription, currentTemp: temp,
+          weatherIconLink: iconLink});
       });
     } else {  // Handle unsuccessful API call
-        postRes.sendFile("error.html", options);
+        postRes.render("error");
     }
   });
 });
