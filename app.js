@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 app.get("/", function (req, res) {
-  res.render("main");
+  res.render("main-2");
 
   // On text entry in HTML input, query Google Places Autocomplete API
   // let location;
