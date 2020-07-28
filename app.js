@@ -103,7 +103,7 @@ app.post("/", function (postReq, postRes) {
         console.log(temp);
         console.log(weatherDescription);
 
-        postRes.render("results", {locationName: location,
+        postRes.render("results-2", {locationName: location,
           weatherType: weatherDescription, currentTemp: temp,
           weatherIconLink: iconLink});
       });
