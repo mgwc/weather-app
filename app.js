@@ -20,10 +20,11 @@ const path = require("path");
 const app = express();
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.set("view engine", "ejs");
 
 app.get("/", function (req, res) {
-  res.render("main-2");
+  res.render("main");
 
   // On text entry in HTML input, query Google Places Autocomplete API
   // let location;
@@ -48,7 +49,7 @@ app.get("/", function (req, res) {
 });
   // TODO: Get location once user selects an autocomplete option
 
-// Post request made when user selects location for which to get weather data
+// Handle POST request for location selected by user
 app.post("/", function (postReq, postRes) {
   console.log("Post request received");
 
@@ -103,7 +104,7 @@ app.post("/", function (postReq, postRes) {
         console.log(temp);
         console.log(weatherDescription);
 
-        postRes.render("results-2", {locationName: location,
+        postRes.render("results", {locationName: location,
           weatherType: weatherDescription, currentTemp: temp,
           weatherIconLink: iconLink});
       });
@@ -111,6 +112,13 @@ app.post("/", function (postReq, postRes) {
         postRes.render("error");
     }
   });
+});
+
+// Handle POST requests for autosuggestion results
+app.post("/query/*", function(postReq, postRes) {
+  console.log("Received POST request for an autosuggest query:");
+  console.log(postReq.body.userTyped);
+  console.log("**********************************************************");
 });
 
 
