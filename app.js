@@ -15,7 +15,7 @@ if (!GOOGLE_PLACES_API_KEY || !OPENWEATHERMAP_API_KEY) {
 const express = require("express");
 const https = require("https");
 const bodyParser = require("body-parser");
-// const { Client, Status } = require("@googlemaps/google-maps-services-js");
+const { Client, Status } = require("@googlemaps/google-maps-services-js");
 const path = require("path");
 const app = express();
 app.use(express.static("public"));
@@ -117,8 +117,46 @@ app.post("/", function (postReq, postRes) {
 // Handle POST requests for autosuggestion results
 app.post("/query/*", function(postReq, postRes) {
   console.log("Received POST request for an autosuggest query:");
-  console.log(postReq.body.userTyped);
-  console.log("**********************************************************");
+  const userQuery = postReq.body.userTyped;
+  console.log(userQuery);
+
+  // const apiCall =
+  //   "https://maps.googleapis.com/maps/api/place/autocomplete/json?" +
+  //   "key=" + GOOGLE_PLACES_API_KEY +
+  //   "input=" + userQuery +
+  //   "types=(cities)" +
+  //   "location=40.5672531,-112.6428853" +
+  //   "radius=2500000"
+
+  let predictionsArr = [];
+  const client = new Client({});
+  client.placeAutocomplete({
+    params: {
+      key: GOOGLE_PLACES_API_KEY,
+      input: userQuery,
+      types: "(cities)",
+      location: "40.5672531,-112.6428853",
+      radius: 2500000
+    },
+    timeout: 1000,
+  })
+  .then((r) => {
+    // TODO: Check response status and handle errors?
+    console.log(r.data.status);
+    console.log(r.data.predictions[0]);
+    r.data.predictions.forEach(function(prediction) {
+      console.log(prediction.description);
+      predictionsArr.push(prediction.description);
+    })
+  })
+  .catch((e) => {
+    console.log(e.response.data.error_message);
+  });
+
+  console.log("Predictions array:" + predictionsArr);
+  // postRes.status(200).send({message: "Success"});
+  postRes.render("suggestions", {predictionsArr: predictionsArr});
+
 });
 
 

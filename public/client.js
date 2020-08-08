@@ -17,8 +17,17 @@ function requestAutosuggestions(query) {
             'Content-type': 'application/json; charset=UTF-8'
         }
     })
-    .then(response => response.json())
-    .then(json => {
-        console.log(json);
-    });
+    .then(response => {
+      // if (!response.ok) {
+      //   throw new Error("Could not reach server.");
+      // }
+      if (response) {
+        console.log(response);
+      } else {
+        console.log("Error");
+      }
+      return response.json();
+    })
+    .then(json => console.log(json))
+    .catch(err => console.error(err));
 }
