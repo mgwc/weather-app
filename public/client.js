@@ -7,6 +7,15 @@ search.addEventListener('input', function() {
   }
 });
 
+
+function manipulateDom(html) {
+  console.log("Entered manipulateDom");
+  console.log("html = " + html);
+  console.log(document.getElementById("welcome-message").className);
+  document.getElementById("welcome-message").innerHTML = "Hello";
+  document.getElementById("match-list").innerHTML = html;
+}
+
 function getAutosuggestions(query) {
   let queryObj = {userTyped: query};
   let queryObjStr = JSON.stringify(queryObj);
@@ -24,9 +33,10 @@ function getAutosuggestions(query) {
       return response.json();
     })
     .then(json => {
-      json.predictions.forEach(function(prediction) {
-        console.log("Prediction: " + prediction);
-      });
+
+      // manipulateDom(html);
+
+      // Build HTML string
       let suggestionsHtml = "";
       const predictionsArr = json.predictions;
       predictionsArr.forEach(function(prediction) {
@@ -38,9 +48,7 @@ function getAutosuggestions(query) {
         '</div>' +
         '</div>'
       });
-      console.log(suggestionsHtml);
-      matchList.innerHtml = suggestionsHtml;
-      // return json;
+      manipulateDom(suggestionsHtml);
     })
     .catch(err => console.error(err));
 }

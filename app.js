@@ -151,9 +151,11 @@ app.post("/query/*", function(postReq, postRes) {
     predictionsArr.forEach(function(prediction) {
       console.log("Next prediction = " + prediction);
     });
-    // postRes.status(200).send({message: "Success"});
+
+    // Send predictions in EJS template
     // postRes.render("suggestions", {predictionsArr: predictionsArr});
-    // postRes.redirect("/error.html");
+
+    // Send predictions back as JSON
     postRes.status(200).send({predictions: predictionsArr});
   })
   .catch((e) => {
