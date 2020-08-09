@@ -2,15 +2,15 @@ const search = document.getElementById("search");
 const matchList = document.getElementById("match-list");
 
 search.addEventListener('input', function() {
-  console.log("Input detected on search");
-  requestAutosuggestions(search.value);
+  if (search.value != "") {
+    getAutosuggestions(search.value);
+  }
 });
 
-function requestAutosuggestions(query) {
-  console.log(query);
+function getAutosuggestions(query) {
   let queryObj = {userTyped: query};
   let queryObjStr = JSON.stringify(queryObj);
-  fetch("http://localhost:3000/query/" + query, {
+  const predictionsObj = fetch("http://localhost:3000/query/" + query, {
         method: 'POST',
         body: queryObjStr,
         headers: {
@@ -18,16 +18,29 @@ function requestAutosuggestions(query) {
         }
     })
     .then(response => {
-      // if (!response.ok) {
-      //   throw new Error("Could not reach server.");
-      // }
-      if (response) {
-        console.log(response);
-      } else {
-        console.log("Error");
+      if (!response.ok) {
+        throw new Error("Could not reach server.");
       }
       return response.json();
     })
-    .then(json => console.log(json))
+    .then(json => {
+      json.predictions.forEach(function(prediction) {
+        console.log("Prediction: " + prediction);
+      });
+      let suggestionsHtml = "";
+      const predictionsArr = json.predictions;
+      predictionsArr.forEach(function(prediction) {
+        console.log("Entered loop for " + prediction + " prediction");
+        suggestionsHtml = suggestionsHtml +
+        '<div class="card">' +
+        '<div class="card-body">' +
+        prediction +
+        '</div>' +
+        '</div>'
+      });
+      console.log(suggestionsHtml);
+      matchList.innerHtml = suggestionsHtml;
+      // return json;
+    })
     .catch(err => console.error(err));
 }

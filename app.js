@@ -128,7 +128,6 @@ app.post("/query/*", function(postReq, postRes) {
   //   "location=40.5672531,-112.6428853" +
   //   "radius=2500000"
 
-  let predictionsArr = [];
   const client = new Client({});
   client.placeAutocomplete({
     params: {
@@ -142,21 +141,24 @@ app.post("/query/*", function(postReq, postRes) {
   })
   .then((r) => {
     // TODO: Check response status and handle errors?
+    const predictionsArr = [];
     console.log(r.data.status);
-    console.log(r.data.predictions[0]);
     r.data.predictions.forEach(function(prediction) {
-      console.log(prediction.description);
-      predictionsArr.push(prediction.description);
+      console.log("r.data.predictions: " + prediction.description);
+      predictionsArr.push("" + prediction.description);
     })
+    console.log("Predictions array:");
+    predictionsArr.forEach(function(prediction) {
+      console.log("Next prediction = " + prediction);
+    });
+    // postRes.status(200).send({message: "Success"});
+    // postRes.render("suggestions", {predictionsArr: predictionsArr});
+    // postRes.redirect("/error.html");
+    postRes.status(200).send({predictions: predictionsArr});
   })
   .catch((e) => {
     console.log(e.response.data.error_message);
   });
-
-  console.log("Predictions array:" + predictionsArr);
-  // postRes.status(200).send({message: "Success"});
-  postRes.render("suggestions", {predictionsArr: predictionsArr});
-
 });
 
 
