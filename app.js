@@ -23,6 +23,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.set("view engine", "ejs");
 
+// Initialize Google Places Node.js Library Client
+const client = new Client({});
+
 app.get("/", function (req, res) {
   res.render("main");
 
@@ -128,7 +131,6 @@ app.post("/query/*", function(postReq, postRes) {
   //   "location=40.5672531,-112.6428853" +
   //   "radius=2500000"
 
-  const client = new Client({});
   client.placeAutocomplete({
     params: {
       key: GOOGLE_PLACES_API_KEY,
@@ -144,12 +146,14 @@ app.post("/query/*", function(postReq, postRes) {
     const predictionsArr = [];
     console.log(r.data.status);
     r.data.predictions.forEach(function(prediction) {
-      console.log("r.data.predictions: " + prediction.description);
-      predictionsArr.push("" + prediction.description);
+      console.log("r.data.predictions: " + prediction.description +
+        ", r.data.place_id:" + prediction.place_id);
+      predictionsArr.push({location:"" + prediction.description,
+        placeId:prediction.place_id});
     })
     console.log("Predictions array:");
     predictionsArr.forEach(function(prediction) {
-      console.log("Next prediction = " + prediction);
+      console.log("Next prediction = " + prediction.location);
     });
 
     // Send predictions in EJS template
@@ -161,6 +165,83 @@ app.post("/query/*", function(postReq, postRes) {
   .catch((e) => {
     console.log(e.response.data.error_message);
   });
+});
+
+app.post("/selected", function(postReq, postRes) {
+  console.log(postReq.body);
+  const placeId = postReq.body.placeId;
+  // const placeDetailsApiUrl =
+  //   "https://maps.googleapis.com/maps/api/place/details/json?" +
+  //   "&key=" + GOOGLE_PLACES_API_KEY +
+  //   "&place_id=" + placeId +
+  //   "&fields=geometry/location";
+
+    client.placeDetails({
+      params: {
+        key: GOOGLE_PLACES_API_KEY,
+        place_id: placeId,
+        fields: ["geometry/location", "utc_offset"]
+      },
+      timeout: 1000,
+    })
+    .then((r) => {
+      console.log(r.data);
+      console.log(r.data.result);
+      console.log(r.data.result.geometry);
+      console.log(r.data.result.utc_offset);
+      const lat = r.data.result.geometry.location.lat;
+      const lon = r.data.result.geometry.location.lng;
+      console.log(r.data.result.geometry.location.lat);
+      console.log(r.data.result.geometry.location.lng);
+      // console.log(r.data.geometry);
+      // console.log(r.data.geometry.location.lat);
+      // console.log(r.data.geometry.location.lng);
+
+      // Make API call to OpenWeatherMap One-Call API
+      const units = "imperial";
+      const apiCall =
+        "https://api.openweathermap.org/data/2.5/onecall?" +
+        "lat=" + lat +
+        "&lon=" + lon +
+        "&units=" +
+        units +
+        "&exclude=minutely,hourly" +
+        "&appid=" +
+        OPENWEATHERMAP_API_KEY;
+      console.log(apiCall);
+
+      https.get(apiCall, function (response) {
+        let status = response.statusCode;
+        console.log("Response code = " + status);
+        console.log("headers: ", response.headers);
+
+      // Handle successful API call
+        response.on("data", (d) => {
+            process.stdout.write(d);
+            const dataStr = "" + d;
+            const dataObj = JSON.parse(dataStr);
+            console.log(dataObj.lat);
+            console.log(dataObj.current.temp);
+            // const weatherData = JSON.parse(data);
+            // const temp = Math.round(weatherData.main.temp);
+            // const weatherDescription = weatherData.weather[0].description;
+            // const iconLink = "http://openweathermap.org/img/wn/" +
+            //   weatherData.weather[0].icon + "@2x.png";
+            // console.log(temp);
+            // console.log(weatherDescription);
+            //
+            // postRes.render("results", {locationName: location,
+            //   weatherType: weatherDescription, currentTemp: temp,
+            //   weatherIconLink: iconLink});
+        });
+      }).on('error', (e) => {
+        console.error(e);
+      });
+    })
+    .catch((e) => {
+      console.log(e.response.data.error_message);
+    });
+
 });
 
 

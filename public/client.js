@@ -40,13 +40,16 @@ function getAutosuggestions(query) {
       let suggestionsHtml = "";
       const predictionsArr = json.predictions;
       predictionsArr.forEach(function(prediction) {
-        console.log("Entered loop for " + prediction + " prediction");
+        console.log("Entered loop for " + prediction.location + " prediction");
         suggestionsHtml = suggestionsHtml +
-        '<div class="card">' +
-        '<div class="card-body">' +
-        prediction +
-        '</div>' +
-        '</div>'
+
+        '<form action="/selected" method="post">' +
+          '<button value="' +
+          prediction.placeId +
+          '" name="placeId" class="card form-control text-center">' +
+            prediction.location +
+          '</button>' +
+        '</form>'
       });
       manipulateDom(suggestionsHtml);
     })
