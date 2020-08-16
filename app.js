@@ -17,6 +17,7 @@ const https = require("https");
 const bodyParser = require("body-parser");
 const { Client, Status } = require("@googlemaps/google-maps-services-js");
 const path = require("path");
+const forecastParse = require(__dirname + "/modules/forecastParse.js");
 const app = express();
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -170,17 +171,12 @@ app.post("/query/*", function(postReq, postRes) {
 app.post("/selected", function(postReq, postRes) {
   console.log(postReq.body);
   const placeId = postReq.body.placeId;
-  // const placeDetailsApiUrl =
-  //   "https://maps.googleapis.com/maps/api/place/details/json?" +
-  //   "&key=" + GOOGLE_PLACES_API_KEY +
-  //   "&place_id=" + placeId +
-  //   "&fields=geometry/location";
 
     client.placeDetails({
       params: {
         key: GOOGLE_PLACES_API_KEY,
         place_id: placeId,
-        fields: ["geometry/location", "utc_offset"]
+        fields: ["geometry/location", "utc_offset", "name"]
       },
       timeout: 1000,
     })
@@ -191,11 +187,9 @@ app.post("/selected", function(postReq, postRes) {
       console.log(r.data.result.utc_offset);
       const lat = r.data.result.geometry.location.lat;
       const lon = r.data.result.geometry.location.lng;
+      const locationName = r.data.result.name;
       console.log(r.data.result.geometry.location.lat);
       console.log(r.data.result.geometry.location.lng);
-      // console.log(r.data.geometry);
-      // console.log(r.data.geometry.location.lat);
-      // console.log(r.data.geometry.location.lng);
 
       // Make API call to OpenWeatherMap One-Call API
       const units = "imperial";
@@ -220,19 +214,19 @@ app.post("/selected", function(postReq, postRes) {
             process.stdout.write(d);
             const dataStr = "" + d;
             const dataObj = JSON.parse(dataStr);
-            console.log(dataObj.lat);
-            console.log(dataObj.current.temp);
-            // const weatherData = JSON.parse(data);
-            // const temp = Math.round(weatherData.main.temp);
-            // const weatherDescription = weatherData.weather[0].description;
-            // const iconLink = "http://openweathermap.org/img/wn/" +
-            //   weatherData.weather[0].icon + "@2x.png";
-            // console.log(temp);
-            // console.log(weatherDescription);
-            //
-            // postRes.render("results", {locationName: location,
-            //   weatherType: weatherDescription, currentTemp: temp,
-            //   weatherIconLink: iconLink});
+
+            const forecastData = forecastParse.getForecastData(dataObj);
+            console.log(forecastData);
+            console.log(locationName);
+
+            postRes.render("results", {locationName: locationName,
+              currIconLink: forecastData[2], currTemp: forecastData[0],
+              currWeatherType: forecastData[1], nextTime: forecastData[3],
+              nextIconLink: forecastData[6], nextWeatherType: forecastData[5],
+              nextTemp: forecastData[4], followingTime: forecastData[7],
+              followingIconLink: forecastData[10],
+              followingWeatherType: forecastData[9],
+              followingTemp: forecastData[8]});
         });
       }).on('error', (e) => {
         console.error(e);

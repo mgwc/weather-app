@@ -14,10 +14,28 @@
   <main role="main" class="inner cover">
     <!-- <h1 class="cover-heading">Cover your page.</h1> -->
     <div class="lead results-box">
-      <p><%= locationName %></p>
-      <p><img src="<%= weatherIconLink %>"<p>
-      <p><%= weatherType %></p>
-      <p><%= currentTemp %>° F</p>
+          <p><%= locationName %></p>
+        <div class="row">
+          <div class="col">
+            <p>Current</p>
+            <p><img src="<%= currIconLink %>"<p>
+            <p><%= currWeatherType %></p>
+            <p><%= currTemp %>° F</p>
+          </div>
+          <div class="col">
+            <p><%= nextTime %></p>
+            <p><img src="<%= nextIconLink %>"<p>
+            <p><%= nextWeatherType %></p>
+            <p><%= nextTemp %>° F</p>
+          </div>
+          <div class="col">
+            <p><%= followingTime %></p>
+            <p><img src="<%= followingIconLink %>"<p>
+            <p><%= followingWeatherType %></p>
+            <p><%= followingTemp %>° F</p>
+          </div>
+        </div>
+      </div>
     </div>
     <div class=lead>
       <form action="/" method="post">
