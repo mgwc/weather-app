@@ -14,38 +14,39 @@
   <main role="main" class="inner cover">
     <!-- <h1 class="cover-heading">Cover your page.</h1> -->
     <div class="lead results-box">
-          <p><%= locationName %></p>
-        <div class="row">
-          <div class="col">
-            <p>Current</p>
-            <p><img src="<%= currIconLink %>"<p>
-            <p><%= currWeatherType %></p>
-            <p><%= currTemp %>° F</p>
+          <div class="row location-name-row justify-content-center">
+            <%= locationName %>
           </div>
-          <div class="col">
-            <p><%= nextTime %></p>
-            <p><img src="<%= nextIconLink %>"<p>
-            <p><%= nextWeatherType %></p>
-            <p><%= nextTemp %>° F</p>
+          <div class="row">
+            <div class="col">
+              <p>Current</p>
+              <p><img src="<%= currIconLink %>"<p>
+              <p><%= currWeatherType %></p>
+              <p><%= currTemp %>° F</p>
+            </div>
+            <div class="col">
+              <p><%= nextTime %></p>
+              <p><img src="<%= nextIconLink %>"<p>
+              <p><%= nextWeatherType %></p>
+              <p><%= nextTemp %>° F</p>
+            </div>
+            <div class="col">
+              <p><%= followingTime %></p>
+              <p><img src="<%= followingIconLink %>"<p>
+              <p><%= followingWeatherType %></p>
+              <p><%= followingTemp %>° F</p>
+            </div>
           </div>
-          <div class="col">
-            <p><%= followingTime %></p>
-            <p><img src="<%= followingIconLink %>"<p>
-            <p><%= followingWeatherType %></p>
-            <p><%= followingTemp %>° F</p>
-          </div>
-        </div>
-      </div>
     </div>
-    <div class=lead>
-      <form action="/" method="post">
+    <div class="lead">
+      <form action="/" method="post" autocomplete="off">
         <div class="row input-row">
           <div class="col d-flex justify-content-center">
             <div class="input-group">
               <label for="locationInput" class="control-label"></label>
-              <input class="form-control text-center" id="autocomplete"
+              <input class="form-control text-center" id="search"
               type="text" name="location"
-              placeholder="Search (city, state) or ZIP">
+              placeholder="Search location name">
               <div class="input-group-append">
                 <button class="btn btn-secondary" type="submit" name="locationBtn">Go</button>
               </div>
@@ -53,6 +54,17 @@
           </div>
         </div>
       </form>
+      <div class="row input-row justify-content-center">
+        <div class="col d-flex justify-content-center">
+          <div id="match-list" class="input-group">
+            <!-- <div class="input-group-append">
+              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-geo-alt" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+              </svg>
+            </div> -->
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 

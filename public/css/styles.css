@@ -6,11 +6,13 @@
   margin: 5% 20% 5% 20%;
 }
 
-.location-name-row {
-  margin-top: 1.5rem;
-}
-
 */
+
+.location-name-row {
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
 
 .error-text {
   margin-top: 1.5rem;
@@ -36,5 +38,5 @@
 } */
 
 .results-box {
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
 }
