@@ -8,10 +8,26 @@ search.addEventListener('input', function() {
 });
 
 
-function manipulateDom(html) {
+// function manipulateDom(html) {
+//   console.log("Entered manipulateDom");
+//   console.log("html = " + html);
+//   document.getElementById("match-list").innerHTML = html;
+// }
+
+function manipulateDom(json) {
   console.log("Entered manipulateDom");
-  console.log("html = " + html);
-  document.getElementById("match-list").innerHTML = html;
+  console.log("json = " + json);
+  let matchListDiv = document.getElementById("match-list");
+
+  json.forEach(function(prediction) {
+    console.log("Entered loop for " + prediction.location + " prediction");
+    let resultDiv = document.createElement("DIV");
+    resultDiv.className = "autocomplete-result";
+    resultDiv.innerHTML = "" + prediction.location +
+      "<input type='hidden' value='" + prediction.placeId +
+      "' name='placeId' id='autocomplete-result-input' class='text-center'>";
+    matchListDiv.appendChild(resultDiv);
+  });
 }
 
 function getAutosuggestions(query) {
@@ -33,21 +49,25 @@ function getAutosuggestions(query) {
     .then(json => {
 
       // Build HTML string
-      let suggestionsHtml = "";
-      const predictionsArr = json.predictions;
-      predictionsArr.forEach(function(prediction) {
-        console.log("Entered loop for " + prediction.location + " prediction");
-        suggestionsHtml = suggestionsHtml +
+      // let suggestionsHtml = "";
+      // const predictionsArr = json.predictions;
+      // predictionsArr.forEach(function(prediction) {
+      //   console.log("Entered loop for " + prediction.location + " prediction");
+      //   suggestionsHtml = suggestionsHtml +
+      //
+      //   '<form action="/selected" method="post">' +
+      //     '<button value="' +
+      //     prediction.placeId +
+      //     '" name="placeId" class="card form-control text-center">' +
+      //       prediction.location +
+      //     '</button>' +
+      //   '</form>'
+      // });
+      // manipulateDom(suggestionsHtml);
 
-        '<form action="/selected" method="post">' +
-          '<button value="' +
-          prediction.placeId +
-          '" name="placeId" class="card form-control text-center">' +
-            prediction.location +
-          '</button>' +
-        '</form>'
-      });
-      manipulateDom(suggestionsHtml);
+      const predictionsArr = json.predictions;
+      manipulateDom(predictionsArr);
+
     })
     .catch(err => console.error(err));
 }
