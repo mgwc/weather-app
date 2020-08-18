@@ -11,8 +11,6 @@ search.addEventListener('input', function() {
 function manipulateDom(html) {
   console.log("Entered manipulateDom");
   console.log("html = " + html);
-  console.log(document.getElementById("welcome-message").className);
-  document.getElementById("welcome-message").innerHTML = "Hello";
   document.getElementById("match-list").innerHTML = html;
 }
 
@@ -33,8 +31,6 @@ function getAutosuggestions(query) {
       return response.json();
     })
     .then(json => {
-
-      // manipulateDom(html);
 
       // Build HTML string
       let suggestionsHtml = "";

@@ -15,7 +15,9 @@
     <!-- <h1 class="cover-heading">Cover your page.</h1> -->
     <div class="lead results-box">
           <div class="row location-name-row justify-content-center">
-            <%= locationName %>
+            <span class="border rounded">
+              <p class="location-name-text"><%= locationName %></p>
+            </span>
           </div>
           <div class="row">
             <div class="col">
@@ -74,4 +76,5 @@
     </div>
   </footer>
 </div>
+<script src="client.js"></script>
 <%- include("footer") -%>

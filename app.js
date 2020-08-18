@@ -29,93 +29,10 @@ const client = new Client({});
 
 app.get("/", function (req, res) {
   res.render("main");
-
-  // On text entry in HTML input, query Google Places Autocomplete API
-  // let location;
-  // // TODO: Get location from HTML input element as it is typed
-  // const client = new Client({});
-  // client
-  //   .placeAutocomplete({
-  //     // See https://googlemaps.github.io/google-maps-services-js/globals.html
-  //     params: {
-  //       input: location,
-  //       key: GOOGLE_PLACES_API_KEY,
-  //       types: ["(cities)"],
-  //     },
-  //     timeout: 1000, // milliseconds
-  //   })
-  //   .then((r) => {
-  //     console.log(r.predictions[0].location);
-  //   })
-  //   .catch((e) => {
-  //     console.log(e.response.data.error_message);
-  //   });
 });
-  // TODO: Get location once user selects an autocomplete option
 
 // Handle POST request for location selected by user
 app.post("/", function (postReq, postRes) {
-  console.log("Post request received");
-
-  const location = postReq.body.location;
-  console.log(location);
-
-  // Distinguish between ZIP code entry and city entry
-  let type = "zip";
-  let i;
-  for (i = 0; i < 5; i++) {
-    if (location.charAt(i) > '9') {
-      type = "city";
-    }
-  }
-
-  let typeParam = "";
-  if (type == "zip") {
-    typeParam = "zip="
-  } else {
-    typeParam = "q="
-  }
-
-  /* TODO: Consider formatting location string further; this will depend on
-  implementation of autocomplete feature */
-
-  const units = "imperial";
-  const apiCall =
-    "https://api.openweathermap.org/data/2.5/weather?" +
-    typeParam +
-    location +
-    "&units=" +
-    units +
-    "&appid=" +
-    OPENWEATHERMAP_API_KEY;
-  console.log(apiCall);
-
-  https.get(apiCall, function (response) {
-    let status = response.statusCode;
-    console.log("Response code = " + status);
-
-    const options = {
-      root: path.join(__dirname, 'public'),
-    }
-
-    // Handle successful API call
-    if (status == 200) {
-      response.on("data", function (data) {
-        const weatherData = JSON.parse(data);
-        const temp = Math.round(weatherData.main.temp);
-        const weatherDescription = weatherData.weather[0].description;
-        const iconLink = "http://openweathermap.org/img/wn/" + weatherData.weather[0].icon + "@2x.png";
-        console.log(temp);
-        console.log(weatherDescription);
-
-        postRes.render("results", {locationName: location,
-          weatherType: weatherDescription, currentTemp: temp,
-          weatherIconLink: iconLink});
-      });
-    } else {  // Handle unsuccessful API call
-        postRes.render("error");
-    }
-  });
 });
 
 // Handle POST requests for autosuggestion results
