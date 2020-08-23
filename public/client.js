@@ -1,10 +1,18 @@
 const search = document.getElementById("search");
 let currentFocus = -1;
+let inputTimeoutFunction;
 
 search.addEventListener('input', function() {
-  closeAllLists();
+  // closeAllLists();
+  if (inputTimeoutFunction) {
+    console.log("inputTimeoutFunction was set and is now unset");
+    clearTimeout(inputTimeoutFunction);
+  } else {
+    console.log("inputTimeoutFunction was " + inputTimeoutFunction);
+  }
   if (search.value != "") {
-    getAutosuggestions(search.value);
+    inputTimeoutFunction = setTimeout(getAutosuggestions, 200);
+    console.log("inputTimeoutFunction set; inputTimeoutFunction = " + inputTimeoutFunction);
   }
 });
 
@@ -105,7 +113,9 @@ function manipulateDom(json) {
       "' name='placeId' id='autocomplete-result-input' class='text-center'>";
     result.addEventListener("click", function(e) {
       /*insert the value for the autocomplete text field:*/
-      search.value = this.getElementsByTagName("input")[0].value;
+      search.value = this.textContent;
+      let selectedLocation = this.getElementsByTagName("input")[0];
+      document.getElementById("locationBtn").value = selectedLocation.value;
       /*close the list of autocompleted values,
       (or any other open lists of autocompleted values:*/
       // closeAllLists();
@@ -115,7 +125,9 @@ function manipulateDom(json) {
     });
 }
 
-function getAutosuggestions(query) {
+function getAutosuggestions() {
+  closeAllLists();
+  let query = search.value;
   let queryObj = {userTyped: query};
   let queryObjStr = JSON.stringify(queryObj);
   const predictionsObj = fetch("http://localhost:3000/query/" + query, {

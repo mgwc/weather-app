@@ -36,7 +36,7 @@ app.post("/", function (postReq, postRes) {
   console.log("Received post request to '/'");
   console.log(postReq);
   console.log("postReq.body = " + postReq.body);
-  const placeId = postReq.body.location;
+  const placeId = postReq.body.locationBtn;
 
     client.placeDetails({
       params: {
@@ -152,79 +152,6 @@ app.post("/query/*", function(postReq, postRes) {
     console.log(e.response.data.error_message);
   });
 });
-
-app.post("/selected", function(postReq, postRes) {
-  console.log("Received post request to '/selected'");
-  console.log(postReq);
-  console.log("postReq.body = " + postReq.body);
-  const placeId = postReq.body.location;
-
-    client.placeDetails({
-      params: {
-        key: GOOGLE_PLACES_API_KEY,
-        place_id: placeId,
-        fields: ["geometry/location", "utc_offset", "name"]
-      },
-      timeout: 1000,
-    })
-    .then((r) => {
-      console.log(r.data);
-      console.log(r.data.result);
-      console.log(r.data.result.geometry);
-      console.log(r.data.result.utc_offset);
-      const lat = r.data.result.geometry.location.lat;
-      const lon = r.data.result.geometry.location.lng;
-      const locationName = r.data.result.name;
-      console.log(r.data.result.geometry.location.lat);
-      console.log(r.data.result.geometry.location.lng);
-
-      // Make API call to OpenWeatherMap One-Call API
-      const units = "imperial";
-      const apiCall =
-        "https://api.openweathermap.org/data/2.5/onecall?" +
-        "lat=" + lat +
-        "&lon=" + lon +
-        "&units=" +
-        units +
-        "&exclude=minutely,hourly" +
-        "&appid=" +
-        OPENWEATHERMAP_API_KEY;
-      console.log(apiCall);
-
-      https.get(apiCall, function (response) {
-        let status = response.statusCode;
-        console.log("Response code = " + status);
-        console.log("headers: ", response.headers);
-
-      // Handle successful API call
-        response.on("data", (d) => {
-            process.stdout.write(d);
-            const dataStr = "" + d;
-            const dataObj = JSON.parse(dataStr);
-
-            const forecastData = forecastParse.getForecastData(dataObj);
-            console.log(forecastData);
-            console.log(locationName);
-
-            postRes.render("results", {locationName: locationName,
-              currIconLink: forecastData[2], currTemp: forecastData[0],
-              currWeatherType: forecastData[1], nextTime: forecastData[3],
-              nextIconLink: forecastData[6], nextWeatherType: forecastData[5],
-              nextTemp: forecastData[4], followingTime: forecastData[7],
-              followingIconLink: forecastData[10],
-              followingWeatherType: forecastData[9],
-              followingTemp: forecastData[8]});
-        });
-      }).on('error', (e) => {
-        console.error(e);
-      });
-    })
-    .catch((e) => {
-      console.log(e.response.data.error_message);
-    });
-
-});
-
 
 app.listen(3000, function () {
   console.log("Server is running on port 3000.");
