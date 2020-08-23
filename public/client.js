@@ -1,12 +1,81 @@
 const search = document.getElementById("search");
-const matchList = document.getElementById("match-list");
+let currentFocus = -1;
 
 search.addEventListener('input', function() {
+  closeAllLists();
   if (search.value != "") {
     getAutosuggestions(search.value);
   }
 });
 
+search.addEventListener("keydown", function(e) {
+    console.log("Entered search.addEventListener(keydown)");
+    var x = document.getElementById("autocomplete-list");
+    if (x) {
+      x = x.getElementsByTagName("div");
+      console.log("x = " + x);
+    } else {
+      console.log("There is no x");
+    }
+
+    if (e.keyCode == 40) {
+      /*If the arrow DOWN key is pressed,
+      increase the currentFocus variable:*/
+      console.log("Down arrow was pressed");
+      currentFocus++;
+      /*and and make the current item more visible:*/
+      addActive(x);
+    } else if (e.keyCode == 38) { //up
+      /*If the arrow UP key is pressed,
+      decrease the currentFocus variable:*/
+      console.log("Up arrow was pressed");
+      currentFocus--;
+      /*and and make the current item more visible:*/
+      addActive(x);
+    } else if (e.keyCode == 13) {
+      /*If the ENTER key is pressed, prevent the form from being submitted,*/
+      console.log("Enter key was pressed");
+      e.preventDefault();
+      if (currentFocus > -1) {
+        /*and simulate a click on the "active" item:*/
+        if (x) {
+          console.log(x[currentFocus]);
+          x[currentFocus].click();
+        }
+      }
+
+    }
+});
+
+function addActive(x) {
+  console.log("Entered addActive; x = " + x);
+  /*a function to classify an item as "active":*/
+  if (!x) return false;
+  /*start by removing the "active" class on all items:*/
+  removeActive(x);
+  if (currentFocus >= x.length) currentFocus = 0;
+  if (currentFocus < 0) currentFocus = (x.length - 1);
+  /*add class "autocomplete-active":*/
+  x[currentFocus].classList.add("autocomplete-active");
+}
+
+function removeActive(x) {
+  /*a function to remove the "active" class from all autocomplete items:*/
+  for (var i = 0; i < x.length; i++) {
+    x[i].classList.remove("autocomplete-active");
+  }
+}
+
+function closeAllLists(elmnt) {
+  /*close all autocomplete lists in the document,
+  except the one passed as an argument:*/
+  var x = document.getElementsByClassName("autocomplete-items");
+  for (var i = 0; i < x.length; i++) {
+    if (elmnt != x[i] && elmnt != search) {
+    x[i].parentNode.removeChild(x[i]);
+    }
+  }
+}
 
 // function manipulateDom(html) {
 //   console.log("Entered manipulateDom");
@@ -14,20 +83,36 @@ search.addEventListener('input', function() {
 //   document.getElementById("match-list").innerHTML = html;
 // }
 
+// Add autocomplete items (whose data is provided by server) to DOM
 function manipulateDom(json) {
   console.log("Entered manipulateDom");
   console.log("json = " + json);
-  let matchListDiv = document.getElementById("match-list");
+  let input = document.getElementById("search");
+
+  let autocompleteItems = document.createElement("DIV");
+  autocompleteItems.setAttribute("id", "autocomplete-list");
+  autocompleteItems.setAttribute("class", "autocomplete-items");
+  /*append the DIV element as a child of the autocomplete container:*/
+  document.getElementById("autocomplete").appendChild(autocompleteItems);
+  // let matchListDiv = document.getElementById("match-list");
 
   json.forEach(function(prediction) {
     console.log("Entered loop for " + prediction.location + " prediction");
-    let resultDiv = document.createElement("DIV");
-    resultDiv.className = "autocomplete-result";
-    resultDiv.innerHTML = "" + prediction.location +
+    let result = document.createElement("DIV");
+    result.className = "autocomplete-result";
+    result.innerHTML = "" + prediction.location +
       "<input type='hidden' value='" + prediction.placeId +
       "' name='placeId' id='autocomplete-result-input' class='text-center'>";
-    matchListDiv.appendChild(resultDiv);
-  });
+    result.addEventListener("click", function(e) {
+      /*insert the value for the autocomplete text field:*/
+      search.value = this.getElementsByTagName("input")[0].value;
+      /*close the list of autocompleted values,
+      (or any other open lists of autocompleted values:*/
+      // closeAllLists();
+      document.getElementById("locationBtn").click();
+      });
+    autocompleteItems.appendChild(result);
+    });
 }
 
 function getAutosuggestions(query) {
