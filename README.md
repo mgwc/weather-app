@@ -1,10 +1,12 @@
 # weather-app
 
-Basic weather app built for practice using Node and Express.
+Basic weather app built for practice using Node + Express and querying APIs.
 
-Will use Google Places Autocomplete API to get standardized location inputs
-from the user, and will query OpenWeather API for current weather data.
+Uses Google Places Autocomplete API to get standardized location inputs
+from the user. Queries OpenWeather API for weather forecast data.
 
 ## setup
 
-After cloning the repository, please run `npm install` and `npm start` to start the server. The app will start on `localhost:3000` and you'll be able to use it via your browser.
+After cloning the repository, please run `npm install` and `npm start`
+to start the server. The app will start on `localhost:3000`, and
+you'll be able to use it via your browser.

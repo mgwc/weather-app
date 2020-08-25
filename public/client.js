@@ -3,46 +3,35 @@ let currentFocus = -1;
 let inputTimeoutFunction;
 
 search.addEventListener('input', function() {
-  // closeAllLists();
   if (inputTimeoutFunction) {
-    console.log("inputTimeoutFunction was set and is now unset");
     clearTimeout(inputTimeoutFunction);
-  } else {
-    console.log("inputTimeoutFunction was " + inputTimeoutFunction);
   }
+
   if (search.value != "") {
     inputTimeoutFunction = setTimeout(getAutosuggestions, 200);
-    console.log("inputTimeoutFunction set; inputTimeoutFunction = " + inputTimeoutFunction);
   }
 });
 
 search.addEventListener("keydown", function(e) {
-    console.log("Entered search.addEventListener(keydown)");
     var x = document.getElementById("autocomplete-list");
     if (x) {
       x = x.getElementsByTagName("div");
-      console.log("x = " + x);
-    } else {
-      console.log("There is no x");
     }
 
     if (e.keyCode == 40) {
       /*If the arrow DOWN key is pressed,
       increase the currentFocus variable:*/
-      console.log("Down arrow was pressed");
       currentFocus++;
       /*and and make the current item more visible:*/
       addActive(x);
     } else if (e.keyCode == 38) { //up
       /*If the arrow UP key is pressed,
       decrease the currentFocus variable:*/
-      console.log("Up arrow was pressed");
       currentFocus--;
       /*and and make the current item more visible:*/
       addActive(x);
     } else if (e.keyCode == 13) {
       /*If the ENTER key is pressed, prevent the form from being submitted,*/
-      console.log("Enter key was pressed");
       e.preventDefault();
       if (currentFocus > -1) {
         /*and simulate a click on the "active" item:*/
@@ -56,7 +45,6 @@ search.addEventListener("keydown", function(e) {
 });
 
 function addActive(x) {
-  console.log("Entered addActive; x = " + x);
   /*a function to classify an item as "active":*/
   if (!x) return false;
   /*start by removing the "active" class on all items:*/
@@ -85,17 +73,8 @@ function closeAllLists(elmnt) {
   }
 }
 
-// function manipulateDom(html) {
-//   console.log("Entered manipulateDom");
-//   console.log("html = " + html);
-//   document.getElementById("match-list").innerHTML = html;
-// }
-
 // Add autocomplete items (whose data is provided by server) to DOM
 function manipulateDom(json) {
-  console.log("Entered manipulateDom");
-  console.log("json = " + json);
-  let input = document.getElementById("search");
 
   let autocompleteItems = document.createElement("DIV");
   autocompleteItems.setAttribute("id", "autocomplete-list");
@@ -111,18 +90,25 @@ function manipulateDom(json) {
     result.innerHTML = "" + prediction.location +
       "<input type='hidden' value='" + prediction.placeId +
       "' name='placeId' id='autocomplete-result-input' class='text-center'>";
+
     result.addEventListener("click", function(e) {
       /*insert the value for the autocomplete text field:*/
       search.value = this.textContent;
-      let selectedLocation = this.getElementsByTagName("input")[0];
-      document.getElementById("locationBtn").value = selectedLocation.value;
+      document.getElementById("locationBtn").value =
+        this.getElementsByTagName("input")[0].value;
       /*close the list of autocompleted values,
       (or any other open lists of autocompleted values:*/
-      // closeAllLists();
       document.getElementById("locationBtn").click();
       });
     autocompleteItems.appendChild(result);
-    });
+  });
+
+  // let googleAttribution = document.createElement("DIV");
+  // googleAttribution.className = "d-flex flex-row-reverse";
+  // googleAttribution.innerHTML =
+  //   "<img src='/images/powered_by_google_on_non_white.png'" +
+  //           "alt='Powered by Google logo'>";
+  // document.getElementById("autocomplete").appendChild(googleAttribution);
 }
 
 function getAutosuggestions() {
@@ -144,24 +130,6 @@ function getAutosuggestions() {
       return response.json();
     })
     .then(json => {
-
-      // Build HTML string
-      // let suggestionsHtml = "";
-      // const predictionsArr = json.predictions;
-      // predictionsArr.forEach(function(prediction) {
-      //   console.log("Entered loop for " + prediction.location + " prediction");
-      //   suggestionsHtml = suggestionsHtml +
-      //
-      //   '<form action="/selected" method="post">' +
-      //     '<button value="' +
-      //     prediction.placeId +
-      //     '" name="placeId" class="card form-control text-center">' +
-      //       prediction.location +
-      //     '</button>' +
-      //   '</form>'
-      // });
-      // manipulateDom(suggestionsHtml);
-
       const predictionsArr = json.predictions;
       manipulateDom(predictionsArr);
 

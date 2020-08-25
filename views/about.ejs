@@ -1,0 +1,35 @@
+<%- include("header") -%>
+  <body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <header class="masthead mb-auto">
+    <div class="inner">
+      <h3 class="masthead-brand">Simple Weather</h3>
+      <nav class="nav nav-masthead justify-content-center">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link active" href="/about">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main role="main" class="inner cover">
+    <p>I created this project to explore full-stack web development
+      and working with APIs.</p>
+    <p>The app is built with Node.js, Express, and EJS. It uses client-side
+      Javascript to query the Express server for
+      autosuggestions. The server queries the Google Places Autocomplete API
+      and, once the user selects a location, the Google Place Details API.
+      Forecast data is retrieved from the Open Weather Map One-Call API.
+      </p>
+      <p>Special thanks to Daniel for providing tips, advice, and encouragement.
+      </p>
+      <p>-Mike</p>
+  </main>
+
+  <footer class="mastfoot mt-auto">
+    <div class="inner">
+      <p></p>
+    </div>
+  </footer>
+</div>
+<script src="client.js"></script>
+<%- include("footer") -%>

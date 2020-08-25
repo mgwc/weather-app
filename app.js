@@ -13,16 +13,25 @@ if (!GOOGLE_PLACES_API_KEY || !OPENWEATHERMAP_API_KEY) {
 }
 
 const express = require("express");
+const app = express();
+
 const https = require("https");
 const bodyParser = require("body-parser");
 const { Client, Status } = require("@googlemaps/google-maps-services-js");
 const path = require("path");
 const forecastParse = require(__dirname + "/modules/forecastParse.js");
-const app = express();
+// Uncomment if separating routes into their own folder and files
+// const home = require("./routes/home");
+// const results = require("./routes/results");
+
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.set("view engine", "ejs");
+
+// Set up routing modules
+// app.use('/', home);
+// app.use('/query/*', query);
 
 // Initialize Google Places Node.js Library Client
 const client = new Client({});
@@ -35,7 +44,6 @@ app.get("/", function (req, res) {
 app.post("/", function (postReq, postRes) {
   console.log("Received post request to '/'");
   console.log(postReq);
-  console.log("postReq.body = " + postReq.body);
   const placeId = postReq.body.locationBtn;
 
     client.placeDetails({
@@ -47,15 +55,10 @@ app.post("/", function (postReq, postRes) {
       timeout: 1000,
     })
     .then((r) => {
-      console.log(r.data);
       console.log(r.data.result);
-      console.log(r.data.result.geometry);
-      console.log(r.data.result.utc_offset);
       const lat = r.data.result.geometry.location.lat;
       const lon = r.data.result.geometry.location.lng;
       const locationName = r.data.result.name;
-      console.log(r.data.result.geometry.location.lat);
-      console.log(r.data.result.geometry.location.lng);
 
       // Make API call to OpenWeatherMap One-Call API
       const units = "imperial";
@@ -83,7 +86,6 @@ app.post("/", function (postReq, postRes) {
 
             const forecastData = forecastParse.getForecastData(dataObj);
             console.log(forecastData);
-            console.log(locationName);
 
             postRes.render("results", {locationName: locationName,
               currIconLink: forecastData[2], currTemp: forecastData[0],
@@ -109,14 +111,6 @@ app.post("/query/*", function(postReq, postRes) {
   const userQuery = postReq.body.userTyped;
   console.log(userQuery);
 
-  // const apiCall =
-  //   "https://maps.googleapis.com/maps/api/place/autocomplete/json?" +
-  //   "key=" + GOOGLE_PLACES_API_KEY +
-  //   "input=" + userQuery +
-  //   "types=(cities)" +
-  //   "location=40.5672531,-112.6428853" +
-  //   "radius=2500000"
-
   client.placeAutocomplete({
     params: {
       key: GOOGLE_PLACES_API_KEY,
@@ -131,19 +125,15 @@ app.post("/query/*", function(postReq, postRes) {
     // TODO: Check response status and handle errors?
     const predictionsArr = [];
     console.log(r.data.status);
+
     r.data.predictions.forEach(function(prediction) {
-      console.log("r.data.predictions: " + prediction.description +
-        ", r.data.place_id:" + prediction.place_id);
       predictionsArr.push({location:"" + prediction.description,
         placeId:prediction.place_id});
     })
-    console.log("Predictions array:");
+
     predictionsArr.forEach(function(prediction) {
       console.log("Next prediction = " + prediction.location);
     });
-
-    // Send predictions in EJS template
-    // postRes.render("suggestions", {predictionsArr: predictionsArr});
 
     // Send predictions back as JSON
     postRes.status(200).send({predictions: predictionsArr});
@@ -152,6 +142,10 @@ app.post("/query/*", function(postReq, postRes) {
     console.log(e.response.data.error_message);
   });
 });
+
+app.get("/about", function(req, res) {
+  res.render("about");
+})
 
 app.listen(3000, function () {
   console.log("Server is running on port 3000.");
