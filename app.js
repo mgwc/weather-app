@@ -21,6 +21,7 @@ const bodyParser = require("body-parser");
 const { Client, Status } = require("@googlemaps/google-maps-services-js");
 const path = require("path");
 const forecastParse = require(__dirname + "/modules/forecastParse.js");
+const cors = require("cors");
 // Uncomment if separating routes into their own folder and files
 // const home = require("./routes/home");
 // const results = require("./routes/results");
@@ -28,6 +29,7 @@ const forecastParse = require(__dirname + "/modules/forecastParse.js");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors({origin:"https://autosuggest-weather.herokuapp.com"}));
 app.set("view engine", "ejs");
 
 // Set up routing modules
