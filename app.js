@@ -1,7 +1,7 @@
 require("dotenv").config();
 
-// const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
-// const OPENWEATHERMAP_API_KEY = process.env.OPENWEATHERMAP_API_KEY;
+const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
+const OPENWEATHERMAP_API_KEY = process.env.OPENWEATHERMAP_API_KEY;
 const PORT = process.env.PORT || 3000;
 
 if (!GOOGLE_PLACES_API_KEY || !OPENWEATHERMAP_API_KEY) {
