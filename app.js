@@ -29,7 +29,7 @@ const cors = require("cors");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors({origin:"https://autosuggest-weather.herokuapp.com"}));
+app.use(cors({origin:"http://autosuggest-weather.herokuapp.com"}));
 app.set("view engine", "ejs");
 
 // Set up routing modules
