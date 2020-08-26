@@ -8,7 +8,7 @@ search.addEventListener('input', function() {
   }
 
   if (search.value != "") {
-    inputTimeoutFunction = setTimeout(getAutosuggestions, 200);
+    inputTimeoutFunction = setTimeout(getAutosuggestions, 300);
   }
 });
 
