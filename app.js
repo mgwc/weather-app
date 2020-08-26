@@ -1,7 +1,8 @@
 require("dotenv").config();
 
-const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
-const OPENWEATHERMAP_API_KEY = process.env.OPENWEATHERMAP_API_KEY;
+// const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
+// const OPENWEATHERMAP_API_KEY = process.env.OPENWEATHERMAP_API_KEY;
+const PORT = process.env.PORT || 3000;
 
 if (!GOOGLE_PLACES_API_KEY || !OPENWEATHERMAP_API_KEY) {
   console.error(
@@ -147,6 +148,6 @@ app.get("/about", function(req, res) {
   res.render("about");
 })
 
-app.listen(3000, function () {
-  console.log("Server is running on port 3000.");
+app.listen(PORT, function () {
+  console.log("Server is running on port " + PORT + ".");
 });
