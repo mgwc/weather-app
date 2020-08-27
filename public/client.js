@@ -117,9 +117,9 @@ function getAutosuggestions() {
   let queryObj = {userTyped: query};
   let queryObjStr = JSON.stringify(queryObj);
   const predictionsObj =
-    fetch("https://autosuggest-weather.herokuapp.com/query/" + query,
+    // fetch("https://autosuggest-weather.herokuapp.com/query/" + query,
     // If using locally, comment out the line above and uncomment the following:
-    // fetch("http://localhost:3000/query/" + query,
+    fetch("http://localhost:3000/query/" + query,
     {
         method: 'POST',
         body: queryObjStr,

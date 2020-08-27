@@ -3,7 +3,8 @@
 Basic weather app built for practice using Node + Express and querying APIs.
 
 Uses Google Places Autocomplete API to get standardized location inputs
-from the user. Queries OpenWeather API for weather forecast data.
+from the user. Queries OpenWeather API for weather forecast data. Uses EJS
+as view engine.
 
 ## setup
 
